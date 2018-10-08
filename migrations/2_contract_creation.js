@@ -1,8 +1,9 @@
 const CoinStructureCrowdsale = artifacts.require("./CoinStructureCrowdsale.sol");
 const CoinStructureToken = artifacts.require("./CoinStructureToken.sol");
 const TokenDeskProxy = artifacts.require("./TokenDeskProxy.sol");
-const TOKEN_DESK_BONUS = 6;
+const TOKEN_DESK_BONUS = 0;
 const MINTER_ADDRESS = 0x0594C787d906f68d57C7920F67386696a56C2Dbd;
+const RATEUPDATER_ADDRESS = 0x0594C787d906f68d57C7920F67386696a56C2Dbd;
 
 module.exports = function(deployer, network, addresses) {
 	deployer.deploy(CoinStructureToken).then(() => {
@@ -21,5 +22,9 @@ module.exports = function(deployer, network, addresses) {
 		return CoinStructureCrowdsale.deployed();
 	}).then((contract) => {
 		return contract.setTokenMinter(MINTER_ADDRESS);
+	}).then(() => {
+		return CoinStructureCrowdsale.deployed();
+	}).then((contract) => {
+		return contract.setRateUpdater(RATEUPDATER_ADDRESS);
 	});
 };

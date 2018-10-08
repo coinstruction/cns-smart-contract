@@ -27,6 +27,9 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
     uint256 public rate = 4375; // 1 token price in ETH when ETH/USD rate is 280
     uint256 public constant PRICE = 64; // 0.064 USD
     uint256 public constant TEAM_TOKENS_LOCK_PERIOD = 60 * 60 * 24 * 365; // 365 days
+    uint256 public constant TEAM_TOKENS_LOCK_PERIOD2 = 60 * 60 * 24 * 730; // 730 days
+    uint256 public constant ADVISORS_TOKENS_LOCK_PERIOD = 60 * 60 * 24 * 180; // 365 days
+    uint256 public constant ADVISORS_TOKENS_LOCK_PERIOD2 = 60 * 60 * 24 * 185; // 730 days
     uint256 public constant SOFT_CAP = 25000000e18; // 25 000 000
     uint256 public constant ICO_TOKENS = 125000000e18; // 125 000 000
     uint256 public constant ICO_BONUS_TOKENS = 50000000e18; // 50 000 000
@@ -67,6 +70,9 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
     address private rateUpdater;
 
     TokenTimelock public teamTimelock;
+    TokenTimelock public teamTimelock2;
+    TokenTimelock public advisorsTimelock;
+    TokenTimelock public advisorsTimelock2;
 
     /**
     * event for token purchase logging
@@ -164,7 +170,7 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
         uint256 excess = _tokens;
         uint256 tokensToMint = 0;
 
-        if (excess > 0 && currentStage < stages.length) {
+        while (excess > 0 && currentStage < stages.length) {
             Stage storage stage = stages[currentStage];
             if (excess >= stage.cap) {
                 excess = excess.sub(stage.cap);
@@ -205,7 +211,6 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
     function releaseTokens() public onlyTokenMinterOrOwner {
         if (goalReached() && !isPrivateTokensReleased) {
             token.mint(ICO_BONUS_WALLET, ICO_BONUS_TOKENS);
-            token.mint(ADVISORS_WALLET, ADVISORS_TOKENS);
             token.mint(MAINTENANCE_WALLET, MAINTENANCE_TOKENS);
             token.mint(AMBASADORS_WALLET, AMBASADORS_TOKENS);
             token.mint(BOUNTY_WALLET, BOUNTY_TOKENS);
@@ -232,7 +237,14 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
             }
 
             teamTimelock = new TokenTimelock(token, TEAM_WALLET, getNow().add(TEAM_TOKENS_LOCK_PERIOD));
-            token.mint(teamTimelock, TEAM_TOKENS);
+            token.mint(teamTimelock, TEAM_TOKENS.div(2));
+            teamTimelock2 = new TokenTimelock(token, TEAM_WALLET, getNow().add(TEAM_TOKENS_LOCK_PERIOD2));
+            token.mint(teamTimelock2, TEAM_TOKENS.div(2));
+
+            advisorsTimelock = new TokenTimelock(token, ADVISORS_WALLET, getNow().add(ADVISORS_TOKENS_LOCK_PERIOD));
+            token.mint(advisorsTimelock, ADVISORS_TOKENS.div(2));
+            advisorsTimelock2 = new TokenTimelock(token, ADVISORS_WALLET, getNow().add(ADVISORS_TOKENS_LOCK_PERIOD2));
+            token.mint(advisorsTimelock2, ADVISORS_TOKENS.div(2));
 
             releaseTokens();
 
