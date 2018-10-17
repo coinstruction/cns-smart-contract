@@ -42,8 +42,8 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
     uint256 public constant LARGE_PURCHASE = 1000000e18; // 1 000 000 tokens
     uint8 public constant LARGE_PURCHASE_BONUS = 0;
 
-    uint256 public constant START_TIME = 1538388000; // 2018-10-01 10:00 UTC +0
-    uint256 public icoEndTime = 1545213600; // 2018-12-19 10:00 UTC +0 
+    uint256 public constant START_TIME = 1543658400; // 2018-12-01 10:00 UTC +0
+    uint256 public icoEndTime = 1552644000; // 2019-03-15 10:00 UTC +0 
 
     Stage[] internal stages;
 
@@ -91,8 +91,8 @@ contract CoinStructureCrowdsale is TokenDeskProxyAware {
     event ManualTokenMintRequiresRefund(address indexed purchaser, uint256 value);
 
     constructor(address _token) public {
-        stages.push(Stage({ till: 1542276000, bonus: 0, cap: 60000000e18 }));   // 2018-07-15 12:00 UTC +0
-        stages.push(Stage({ till: 1544349600, bonus: 0, cap: 35000000e18 }));   // 2018-07-15 12:00 UTC +0
+        stages.push(Stage({ till: 1546336800, bonus: 0, cap: 60000000e18 }));   // 2019-01-01 10:00 UTC +0
+        stages.push(Stage({ till: 1549015200, bonus: 0, cap: 35000000e18 }));   // 2019-02-01 10:00 UTC +0
         stages.push(Stage({ till: ~uint64(0), bonus: 0, cap: 30000000e18 }));   // unlimited
 
         token = CoinStructureToken(_token);
